@@ -33,13 +33,13 @@ def divDataSet(cleanDataPath, i):
     testData = {"group":[],"labels":[]}
     group,labels = createDataSet(cleanDataPath)
     # 随机划分
-    dataSetIndicies = range(len(group))
+    dataSetIndicies = list(range(len(group)))
     random.shuffle(dataSetIndicies)
 
     if i >= 0 and i < 10:
-        trainDataIndex = dataSetIndicies[:len(group) / 10 * i]
-        trainDataIndex.extend(dataSetIndicies[len(group) / 10 * (i+1):])
-        testDataIndex = dataSetIndicies[len(group) / 10 * i:len(group) / 10 * (i+1)]
+        trainDataIndex = dataSetIndicies[:len(group) // 10 * i]
+        trainDataIndex.extend(dataSetIndicies[len(group) // 10 * (i+1):])
+        testDataIndex = dataSetIndicies[len(group) // 10 * i:len(group) // 10 * (i+1)]
 
         for index in trainDataIndex:
             trainData["group"].append(group[index])
@@ -51,7 +51,7 @@ def divDataSet(cleanDataPath, i):
             testData["labels"].append(labels[index])
         testData["group"] = array(testData["group"])
     else:
-        print "Num should be a int in 0..9"
+        print("Num should be a int in 0..9")
 
     return trainData,testData
 
@@ -61,7 +61,7 @@ def createDataSet(dataPath):
     with open(dataPath,'r') as f:
         for line in f.readlines():
             line = line.strip().split(',')
-            groupItem = map(float, line[:-1])
+            groupItem = list(map(float, line[:-1]))
             group.append(groupItem)
             labels.append(line[-1])
     dataSet = array(group)
@@ -74,6 +74,7 @@ def getLpDistances(lp, inX, dataSet):
     dataSetSize = dataSet.shape[0]
 
     diffMat = absolute(tile(inX, (dataSetSize, 1)) - dataSet)
+
     lpDiffMat = diffMat ** lp
     lpDistances = lpDiffMat.sum(axis = 1)
     distances = lpDistances ** (1.0/lp)
@@ -87,7 +88,7 @@ def classify(inX, dataSet, labels, k, lp):
     for i in range(k):
         voteLabel = labels[sortedDistIndicies[i]]
         classCount[voteLabel] = classCount.get(voteLabel,0) + 1
-    sortedClassCount = sorted(classCount.iteritems(),key = operator.itemgetter(1), reverse = True)
+    sortedClassCount = sorted(classCount.items(),key = operator.itemgetter(1), reverse = True)
     return sortedClassCount[0][0]
 
 def dataClassTest(cleanDataPath, k, lp,i):
@@ -106,14 +107,14 @@ def dataClassTest(cleanDataPath, k, lp,i):
         classifierResult = classify(inX, trainSet, trainLabels, k, lp)
         if classifierResult == testLabels[testCount]:
             pass
-            # print "[Correct Classification] the classifier came back with : %s, the real answer is: %s"\
-            #       % (classifierResult,testLabels[testCount])
+            # print("[Correct Classification] the classifier came back with : %s, the real answer is: %s"\
+            #       % (classifierResult,testLabels[testCount]))
         else:
             errorCount += 1
-            # print "[Wrong Classification] the classifier came back with : %s, the real answer is: %s" \
-            #       % (classifierResult, testLabels[testCount])
+            # print("[Wrong Classification] the classifier came back with : %s, the real answer is: %s" \
+            #       % (classifierResult, testLabels[testCount]))
         testCount += 1
-    # print "[testNum: %d, k: %d, lp: %d] The error rate is :%.3f%%" %(testNum,k,lp,errorCount/float(testSetSize)*100)
+    # print("[testNum: %d, k: %d, lp: %d] The error rate is :%.3f%%" %(testNum,k,lp,errorCount/float(testSetSize)*100))
     return errorCount/float(testSetSize)
 
 def crossValidation(cleanDataPath, k, lp):
@@ -141,12 +142,12 @@ def hello():
 
 
 if __name__ == "__main__":
-    rawDataPath = unicode("C:/Users/Mr.x/repos/DataMiningProject/zanwen/data/rawdata.csv",'utf-8')
-    cleanDataPath = unicode("C:/Users/Mr.x/repos/DataMiningProject/zanwen/data/cleandata.csv",'utf-8')
+    rawDataPath = "C:/Users/Mr.x/repos/DataMiningProject/zanwen/data/rawdata.csv"
+    cleanDataPath = "C:/Users/Mr.x/repos/DataMiningProject/zanwen/data/cleandata.csv"
 
     testNum=100
     maxK= 5
     maxLp= 5
     minRecord = findBestArgs(cleanDataPath, maxK, maxLp)
-    print "Minimal error rate: %f%%, when k: %d, lp: %d"%(minRecord['minErrorRate']*100,minRecord['k'], minRecord['lp'])
+    print("Minimal error rate: %f%%, when k: %d, lp: %d"%(minRecord['minErrorRate']*100,minRecord['k'], minRecord['lp']))
 
