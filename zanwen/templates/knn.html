@@ -1,10 +1,9 @@
 {% extends "layout.html" %}
 
-{% block juery%}<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.0.js"></script>{% endblock%}
-
 {% block script%}
-<script>
+<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.0.js"></script>
 
+<script>
     $(function(){
 
         $("#knn_btn").click(function () {
@@ -17,29 +16,58 @@
         });
 
     })
-
-
 </script>
-
-
 {% endblock%}
 
 {% block body %}
 
-<h1>K近邻</h1>
 
-<h2>参数设置</h2>
-<form action="" method="post">
-    <ul>
-    <li>k: <input type="text" name="knn_k"></li>
-    <li>lp: <input type="text" name="knn_lp"></li>
-    </ul>
-<p><input type="submit" value="提交"></p>
-</form>
+<header class="jumbotron subhead" id="overview">
+  <div class="container">
+    <h1>k近邻算法</h1>
+    <p class="lead">K最近邻(k-Nearest Neighbor，KNN)分类算法，是一个理论上比较成熟的方法，也是最简单的机器学习算法之一。该方法的思路是：如果一个样本在特征空间中的k个最相似(即特征空间中最邻近)的样本中的大多数属于某一个类别，则该样本也属于这个类别。 </p>
+  </div>
+</header>
 
-<h2>结果展示</h2>
-<button id="knn_btn">knn run</button>
-<div id="aaa"></div>
+<div class="container">
+    <div class="row">
+      <div class="span3 bs-docs-sidebar">
+        <ul class="nav nav-list bs-docs-sidenav affix-top">
+          <li class=""><a href="#section1"><i class="icon-chevron-right"></i> 参数设定</a></li>
+          <li class=""><a href="#section2"><i class="icon-chevron-right"></i> 结果展示</a></li>
+        </ul>
+      </div>
+      <div class="span9">
 
+        <!-- Section
+        ================================================== -->
+        <section id="section1">
+          <div class="page-header">
+            <h1>参数设定</h1>
+          </div>
+           <form action="" method="post">
+               <ul>
+                   <li>k: <input type="text" name="knn_k"></li>
+                   <li>lp: <input type="text" name="knn_lp"></li>
+               </ul>
+               <p><input type="submit" value="提交"></p>
+           </form>
+
+        </section>
+
+          <section id="section2">
+          <div class="page-header">
+            <h1>结果展示</h1>
+          </div>
+              {% if data %}
+              <P>正确率:{{ data }}</P>
+              {% endif %}
+            <button id="knn_btn">knn run</button>
+            <div id="aaa"></div>
+          </section>
+
+      </div>
+    </div>
+</div>
 
 {%endblock%}

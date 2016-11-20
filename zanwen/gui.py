@@ -19,6 +19,7 @@ def index():
 def test():
     return "%.3f%%" %((1-crossValidation(unicode("C:/Users/Mr.x/repos/DataMiningProject/zanwen/data/cleandata.csv",'utf-8'), knn_k, knn_lp))*100)
 
+
 @app.route("/knn", methods=['GET', 'POST'])
 def knn():
     if request.method == 'POST':
