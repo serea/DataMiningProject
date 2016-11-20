@@ -11,6 +11,7 @@ knn_lp=1
 
 @app.route("/background")
 @app.route("/")
+@app.route("/index")
 def index():
     return render_template("background.html")
 
@@ -29,7 +30,7 @@ def knn():
     #                                                           'lp_knn':request.form['lp_knn']}))
     #     # return jsonify(k_knn=request.form['knn_k'],
     #     #                lp_knn=request.form['knn_lp'])
-    return render_template("knn.html")
+    return render_template("knn.html",title="k近邻")
 
 @app.route("/knn-result")
 def knn_result():
@@ -38,15 +39,15 @@ def knn_result():
 
 @app.route("/svm")
 def svm():
-    return render_template("svm.html")
+    return render_template("svm.html",title="svm")
 
 @app.route("/bayes")
 def bayes():
-    return render_template("bayes.html")
+    return render_template("bayes.html",title="贝叶斯")
 
 @app.route("/decision-tree")
 def decisionTree():
-    return render_template("decision-tree.html")
+    return render_template("decision-tree.html",title="决策树")
 
 if __name__ == "__main__":
     app.run()

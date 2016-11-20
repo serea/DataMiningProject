@@ -26,14 +26,33 @@
 
         <!-- Section
         ================================================== -->
+
+        <!-- Section
+        ================================================== -->
         <section id="section1">
           <div class="page-header">
             <h1>参数设定</h1>
           </div>
-           <form action="" method="post">
+           <!--<form action="" method="post">-->
+               <!--<ul>-->
+                   <!--<li>k: <input type="text" name="knn_k"></li>-->
+                   <!--<li>lp: <input type="text" name="knn_lp"></li>-->
+               <!--</ul>-->
+               <!--<p><input type="submit" class="btn btn-primary" value="提交"></p>-->
+           <!--</form>-->
 
-               <p><input type="submit" value="提交"></p>
-           </form>
+        <form  action="" method="post" class="from">
+             <div>
+                 <label  for="inputK">参数1: </label>
+                 <input type="text" name="knn_k" id = "inputK" placeholder="请输入参数1...">
+             </div>
+             <div>
+                 <label   for="inputLp">参数2: </label>
+                 <input type="text" name="knn_lp" id="inputLp" placeholder="请输入参数2....">
+             </div>
+             <button type="submit" class="btn btn-primary">提交</button>
+         </form>
+
 
         </section>
 
@@ -41,7 +60,8 @@
           <div class="page-header">
             <h1>结果展示</h1>
           </div>
-            <button id="knn_btn">run</button>
+            <p id="precise_rate">正确率: </p>
+              <button id="knn_btn" class="btn btn-primary">运行</button>
           </section>
 
       </div>
