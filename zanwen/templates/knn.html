@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+
+{% block juery%}<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.0.js"></script>{% endblock%}
+
+{% block script%}
+<script>
+
+    $(function(){
+
+        $("#knn_btn").click(function () {
+            $.ajax({
+                url: "/knn-result",
+                success: function (data) {
+                    $("#aaa").text(data);
+                }
+            });
+        });
+
+    })
+
+
+</script>
+
+
+{% endblock%}
+
+{% block body %}
+
+<h1>K近邻</h1>
+
+<h2>参数设置</h2>
+<form action="" method="post">
+    <ul>
+    <li>k: <input type="text" name="knn_k"></li>
+    <li>lp: <input type="text" name="knn_lp"></li>
+    </ul>
+<p><input type="submit" value="提交"></p>
+</form>
+
+<h2>结果展示</h2>
+<button id="knn_btn">knn run</button>
+<div id="aaa"></div>
+
+
+{%endblock%}

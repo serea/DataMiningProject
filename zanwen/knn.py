@@ -116,20 +116,28 @@ def dataClassTest(cleanDataPath, k, lp,i):
     # print "[testNum: %d, k: %d, lp: %d] The error rate is :%.3f%%" %(testNum,k,lp,errorCount/float(testSetSize)*100)
     return errorCount/float(testSetSize)
 
+def crossValidation(cleanDataPath, k, lp):
+    totalRate = 0.0
+    for i in range(10):
+        totalRate += dataClassTest(cleanDataPath, k, lp, i)
+    totalRate /= 10
+    return totalRate
+
 def findBestArgs(cleanDataPath, maxK, maxLp):
     minRecord = {"k":None,"lp":None,"minErrorRate":1}   # 记录最小错误率以及对应的k,lp
     for k in range(1,maxK+1):
         for lp in range(1,maxLp+1):
-            totalRate = 0.0
-            for i in range(10):
-                totalRate += dataClassTest(cleanDataPath, k, lp,i)
-            totalRate /= 10
+            totalRate = crossValidation(cleanDataPath, k, lp)
             print("totalRate: %f%%, k: %d, lp: %d" %(totalRate*100,k,lp))
             if totalRate < minRecord["minErrorRate"]:
                 minRecord['k'] = k;
                 minRecord['lp'] = lp;
                 minRecord['minErrorRate'] = totalRate;
     return minRecord
+
+
+def hello():
+    return  "hello"
 
 
 if __name__ == "__main__":
@@ -141,3 +149,4 @@ if __name__ == "__main__":
     maxLp= 5
     minRecord = findBestArgs(cleanDataPath, maxK, maxLp)
     print "Minimal error rate: %f%%, when k: %d, lp: %d"%(minRecord['minErrorRate']*100,minRecord['k'], minRecord['lp'])
+
