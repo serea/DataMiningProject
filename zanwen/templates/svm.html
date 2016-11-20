@@ -1,22 +1,7 @@
 {% extends "layout.html" %}
 
 {% block script%}
-<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.0.js"></script>
 
-<script>
-    $(function(){
-
-        $("#knn_btn").click(function () {
-            $.ajax({
-                url: "/knn-result",
-                success: function (data) {
-                    $("#aaa").text("正确率:"+data);
-                }
-            });
-        });
-
-    })
-</script>
 {% endblock%}
 
 {% block body %}
@@ -24,8 +9,8 @@
 
 <header class="jumbotron subhead" id="overview">
   <div class="container">
-    <h1>k近邻算法</h1>
-    <p class="lead">K最近邻(k-Nearest Neighbor，KNN)分类算法，是一个理论上比较成熟的方法，也是最简单的机器学习算法之一。该方法的思路是：如果一个样本在特征空间中的k个最相似(即特征空间中最邻近)的样本中的大多数属于某一个类别，则该样本也属于这个类别。 </p>
+    <h1>支持向量机</h1>
+    <p class="lead">支持向量机(Support Vector Machine，SVM)是Corinna Cortes和Vapnik等于1995年首先提出的，它在解决小样本、非线性及高维模式识别中表现出许多特有的优势，并能够推广应用到函数拟合等其他机器学习问题中。 </p>
   </div>
 </header>
 
@@ -46,10 +31,7 @@
             <h1>参数设定</h1>
           </div>
            <form action="" method="post">
-               <ul>
-                   <li>k: <input type="text" name="knn_k"></li>
-                   <li>lp: <input type="text" name="knn_lp"></li>
-               </ul>
+
                <p><input type="submit" value="提交"></p>
            </form>
 
@@ -59,8 +41,7 @@
           <div class="page-header">
             <h1>结果展示</h1>
           </div>
-            <button id="knn_btn">knn run</button>
-            <div id="aaa"></div>
+            <button id="knn_btn">run</button>
           </section>
 
       </div>

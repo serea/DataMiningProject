@@ -9,15 +9,10 @@ bootstrap = Bootstrap(app)
 knn_k=1
 knn_lp=1
 
-@app.route("/index")
+@app.route("/background")
 @app.route("/")
 def index():
     return render_template("background.html")
-
-@app.route("/knn-result")
-def test():
-    return "%.3f%%" %((1-crossValidation("C:/Users/Mr.x/repos/DataMiningProject/zanwen/data/cleandata.csv", knn_k, knn_lp))*100)
-
 
 @app.route("/knn", methods=['GET', 'POST'])
 def knn():
@@ -36,21 +31,22 @@ def knn():
     #     #                lp_knn=request.form['knn_lp'])
     return render_template("knn.html")
 
+@app.route("/knn-result")
+def knn_result():
+    return "%.3f%%" %((1-crossValidation("C:/Users/Mr.x/repos/DataMiningProject/zanwen/data/cleandata.csv", knn_k, knn_lp))*100)
 
-# @app.route('/login', methods=['GET', 'POST'])
-# def login():
-#     form = LoginForm()
-#     if form.validate_on_submit():
-#         flash('Login requested for OpenID="%s", remember_me=%s' %
-#               (form.openid.data, str(form.remember_me.data)))
-#         return redirect('/index')
-#     return render_template('login.html',
-#                            title='Sign In',
-#                            form=form,
-#                            providers=app.config['OPENID_PROVIDERS'])
 
-def hello():
-    return "hello"
+@app.route("/svm")
+def svm():
+    return render_template("svm.html")
+
+@app.route("/bayes")
+def bayes():
+    return render_template("bayes.html")
+
+@app.route("/decision-tree")
+def decisionTree():
+    return render_template("decision-tree.html")
 
 if __name__ == "__main__":
     app.run()
