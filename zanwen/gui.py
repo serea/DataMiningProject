@@ -5,7 +5,6 @@ import  json
 
 app = Flask(__name__)
 bootstrap = Bootstrap(app)
-app.config.from_object('config')
 
 knn_k=1
 knn_lp=1
@@ -17,7 +16,7 @@ def index():
 
 @app.route("/knn-result")
 def test():
-    return "%.3f%%" %((1-crossValidation(unicode("C:/Users/Mr.x/repos/DataMiningProject/zanwen/data/cleandata.csv",'utf-8'), knn_k, knn_lp))*100)
+    return "%.3f%%" %((1-crossValidation("C:/Users/Mr.x/repos/DataMiningProject/zanwen/data/cleandata.csv", knn_k, knn_lp))*100)
 
 
 @app.route("/knn", methods=['GET', 'POST'])
