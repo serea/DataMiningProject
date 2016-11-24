@@ -11,6 +11,7 @@ import math
 import time
 import csv
 from sklearn import tree
+import random
 
 path = './continuousdata.csv'
 
@@ -74,20 +75,14 @@ def majorityCnt(classList):
     
 def chooseBestFeatureAndValueToSplit(dataSet,labels):
     numFeatures = len(dataSet[0]) - 1 #最后一项是标签
-    #print(dataSet[0])
     baseEntropy = calcShannonEnt(dataSet)
     bestInfoGain = 0.0
     bestFeature = -1
-    #print("numFeatures:")
-    #print(numFeatures)
     for i in (range(numFeatures)):
-        #print(labels[i])
         featList = [example[i] for example in dataSet]
         uniqueVals = set(featList)
         #featList得到所有的feature值
         uniqueVals=sorted(uniqueVals)
-        #print("uniqueVals：" )
-        #print(uniqueVals)
         newEntropy = 0.0
         for value in uniqueVals:
             subDataSet = splitDataSet(dataSet,i,value)
@@ -110,27 +105,19 @@ def createTree(dataSet,labels):
     if classList.count(classList[0])==len(classList):
         #统计与classlist【0】相同的项的个数
         #类别相同停止划分
-        #print(labels)
-        #print("stop for same class")
         return classList[0]
     if len(dataSet[0])==1:
         #所有特征用完
-        #print(labels)
-        #print("stop for no feature")
         return majorityCnt(classList)
-    #print(dataSet[0])
     (bestFeat,featValue) = chooseBestFeatureAndValueToSplit(dataSet,labels)
-    print(bestFeat,featValue,labels[bestFeat])
+    #print(bestFeat,featValue,labels[bestFeat])
     bestFeatLabel = labels[bestFeat]
     myTree = {bestFeatLabel:{}}
-    #print(labels)
-    del(labels[bestFeat])
-    #featValues = [example[bestFeat] for example in dataSet]#bestFeat 有哪些值
-    #uniqueVals = set(featValues)
-    #for value in uniqueVals:
     subLabels = labels[:]
+    del(subLabels[bestFeat])
     myTree[bestFeatLabel][featValue] = createTree(splitDataSet(dataSet,bestFeat,featValue),subLabels)
     subLabels = labels[:]
+    del(subLabels[bestFeat])
     myTree[bestFeatLabel][featValue+'false'] = createTree(splitDataSetFalse(dataSet,bestFeat,featValue),subLabels)
     return myTree
 
@@ -182,34 +169,35 @@ def FindAccuracy(datatest,trainnum,testnum,myTree,label):
             wrongnum += 1
     print(rightnum,wrongnum)
     return rightnum/len(datatest)        
-
-#将数据集分为训练和测试集
-def Divide(dataSet):
-    length = len(dataSet)
-    lenOfTrain = math.floor(9/10*length)
-    lenOfTest = length-lenOfTrain
-    datatrain=dataSet[-lenOfTrain:]
-    datatest = dataSet[0:-lenOfTrain]
-    #datatrain=dataSet[0:lenOfTrain]
-    #datatest = dataSet[lenOfTrain+1:]
-    return datatrain,datatest,lenOfTrain,lenOfTest
-    
+  
 
 def main():
     data,label = createDataSet(path)
-    #print(data)
-    #print("label:")
-    #print(label)
-    (datatrain,datatest,trainnum,testnum) = Divide(data)
-    print(trainnum,testnum)
-    print(len(datatrain),len(datatest))
-    myTree = createTree(datatrain,label)
-    #print(myTree)
-    accuracy = FindAccuracy(datatest,trainnum,testnum,myTree,label)
-    print("accuracy")
-    print(accuracy)
-    
-    #PrintTree(myTree,'ROOT')
+    tolaccu=0
+    lengthOfData=len(data)
+    split=math.floor(len(data)/10)
+    random.shuffle(data)
+    for time in range(10):
+    	datatrain=[]
+    	datatest=[]
+    	for i in range(lengthOfData):
+    		if i > split*(time) and i < split*(time+1)-1:
+    			datatest.append(data[i])
+    		else:
+    			datatrain.append(data[i])
+    	trainnum=len(datatrain)
+    	testnum=len(datatest)
+    	print(trainnum)
+    	print(testnum)
+    	print(label)
+    	myTree = createTree(datatrain,label)
+    	#print(myTree)
+    	accuracy = FindAccuracy(datatest,trainnum,testnum,myTree,label)
+    	print("accuracy:",time)
+    	print(accuracy)
+    	tolaccu=tolaccu+accuracy
+    tolaccu = tolaccu/10
+    print(tolaccu)
        
 
 if __name__=='__main__':
