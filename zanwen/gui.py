@@ -1,7 +1,8 @@
 from flask import Flask, render_template, flash, redirect, jsonify,request
 from flask_bootstrap import Bootstrap
-from knn import crossValidation,hello
-import  json
+import json
+from zanwen.knn import crossValidation
+from suliya.ID3ForContinuousValue import output
 
 app = Flask(__name__)
 bootstrap = Bootstrap(app)
@@ -20,9 +21,10 @@ def knn():
     if request.method == 'POST':
         global knn_k
         global knn_lp
+        print(knn_k)
         knn_k = int(request.form['knn_k'])
         knn_lp = int(request.form['knn_lp'])
-        return render_template("knn.html")
+        return render_template("knn.html",title="k近邻",knn_k=knn_k,knn_lp=knn_lp)
     # if request.method== 'POST':
     #     knn_k=int(request.form['k_knn'])
     #     knn_lp=int(request.form['lp_knn'])
@@ -30,12 +32,20 @@ def knn():
     #                                                           'lp_knn':request.form['lp_knn']}))
     #     # return jsonify(k_knn=request.form['knn_k'],
     #     #                lp_knn=request.form['knn_lp'])
-    return render_template("knn.html",title="k近邻")
+    return render_template("knn.html",title="k近邻",knn_k=knn_k,knn_lp=knn_lp)
 
 @app.route("/knn-result")
 def knn_result():
-    return "%.3f%%" %((1-crossValidation("C:/Users/Mr.x/repos/DataMiningProject/zanwen/data/cleandata.csv", knn_k, knn_lp))*100)
+    # return "%.3f%%" %((1-crossValidation(knn_k, knn_lp))*100)
 
+    totalRate, totalClassCoverRate = crossValidation(knn_k, knn_lp)
+    return json.dumps({
+        "correctRate": "%.3f%%" %((1-totalRate)*100),
+        "coverRateH1": "%.3f%%" %(totalClassCoverRate[0]),
+        "coverRateH2": "%.3f%%" % (totalClassCoverRate[1]),
+        "coverRateH3": "%.3f%%" % (totalClassCoverRate[2]),
+        "coverRateH4": "%.3f%%" % (totalClassCoverRate[3])
+    })
 
 @app.route("/svm")
 def svm():
@@ -45,9 +55,12 @@ def svm():
 def bayes():
     return render_template("bayes.html",title="贝叶斯")
 
-@app.route("/decision-tree")
+@app.route("/decision-tree",methods=['GET','POST'])
 def decisionTree():
-    return render_template("decision-tree.html",title="决策树")
+    if request.method=='POST':
+        return "%.3f%%" %(output()*100)
+    else:
+        return render_template("decision-tree.html", title="决策树")
 
 if __name__ == "__main__":
     app.run()
