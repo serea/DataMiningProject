@@ -3,9 +3,15 @@
 from numpy import *
 import operator
 import random
+import os
 
+Path = '/'.join(os.getcwd().split('/')[:-1])+'/zanwen'
+rawDataPath = Path + '/data/rawdata.csv'
+cleanDataPath = Path + '/data/cleandata.csv'
+
+labelsDict = {'H1': 0, 'H2': 1, 'H3': 2, 'H4': 3}
 # 预处理
-def preproces(rawDataPath, cleanDataPath):
+def preproces():
     outstream = ""
     dataSet = []
     sample = []
@@ -28,7 +34,7 @@ def preproces(rawDataPath, cleanDataPath):
         f.write(outstream)
 
 # 交叉验证法，第i份化入测试集，其他九分化为训练集
-def divDataSet(cleanDataPath, i):
+def divDataSet( i):
     trainData = {"group":[],"labels":[]}
     testData = {"group":[],"labels":[]}
     group,labels = createDataSet(cleanDataPath)
@@ -91,8 +97,8 @@ def classify(inX, dataSet, labels, k, lp):
     sortedClassCount = sorted(classCount.items(),key = operator.itemgetter(1), reverse = True)
     return sortedClassCount[0][0]
 
-def dataClassTest(cleanDataPath, k, lp,i):
-    trainData, testData = divDataSet(cleanDataPath, i)
+def dataClassTest(k, lp,i):
+    trainData, testData = divDataSet(i)
 
     trainSet = trainData["group"]
     trainLabels = trainData["labels"]
@@ -103,10 +109,14 @@ def dataClassTest(cleanDataPath, k, lp,i):
     errorCount = 0
     testCount = 0
 
+
+    labelsCount = array([0,0,0,0])
+    classCoverCount = array([0,0,0,0])
     for inX in testSet:
         classifierResult = classify(inX, trainSet, trainLabels, k, lp)
+        labelsCount[labelsDict[trainLabels[testCount]]] += 1
         if classifierResult == testLabels[testCount]:
-            pass
+            classCoverCount[labelsDict[trainLabels[testCount]]] += 1
             # print("[Correct Classification] the classifier came back with : %s, the real answer is: %s"\
             #       % (classifierResult,testLabels[testCount]))
         else:
@@ -115,20 +125,26 @@ def dataClassTest(cleanDataPath, k, lp,i):
             #       % (classifierResult, testLabels[testCount]))
         testCount += 1
     # print("[testNum: %d, k: %d, lp: %d] The error rate is :%.3f%%" %(testNum,k,lp,errorCount/float(testSetSize)*100))
-    return errorCount/float(testSetSize)
+    errorRate = errorCount/float(testSetSize)
+    classCoverRate = classCoverCount/labelsCount
+    return errorRate,classCoverRate
 
-def crossValidation(cleanDataPath, k, lp):
+def crossValidation(k, lp):
     totalRate = 0.0
+    totalClassCoverRate = 0
     for i in range(10):
-        totalRate += dataClassTest(cleanDataPath, k, lp, i)
+        errorRate, classCoverRate = dataClassTest( k, lp, i)
+        totalRate += errorRate
+        totalClassCoverRate += classCoverRate
     totalRate /= 10
-    return totalRate
+    totalClassCoverRate /= 10
+    return totalRate,totalClassCoverRate
 
-def findBestArgs(cleanDataPath, maxK, maxLp):
+def findBestArgs( maxK, maxLp):
     minRecord = {"k":None,"lp":None,"minErrorRate":1}   # 记录最小错误率以及对应的k,lp
     for k in range(1,maxK+1):
         for lp in range(1,maxLp+1):
-            totalRate = crossValidation(cleanDataPath, k, lp)
+            totalRate,totalClassCoverRate= crossValidation(k, lp)
             print("totalRate: %f%%, k: %d, lp: %d" %(totalRate*100,k,lp))
             if totalRate < minRecord["minErrorRate"]:
                 minRecord['k'] = k;
@@ -142,12 +158,12 @@ def hello():
 
 
 if __name__ == "__main__":
-    rawDataPath = "C:/Users/Mr.x/repos/DataMiningProject/zanwen/data/rawdata.csv"
-    cleanDataPath = "C:/Users/Mr.x/repos/DataMiningProject/zanwen/data/cleandata.csv"
 
-    testNum=100
-    maxK= 5
-    maxLp= 5
-    minRecord = findBestArgs(cleanDataPath, maxK, maxLp)
-    print("Minimal error rate: %f%%, when k: %d, lp: %d"%(minRecord['minErrorRate']*100,minRecord['k'], minRecord['lp']))
+    # testNum=100
+    # maxK= 5
+    # maxLp= 5
+    # minRecord = findBestArgs(cleanDataPath, maxK, maxLp)
+    # print("Minimal error rate: %f%%, when k: %d, lp: %d"%(minRecord['minErrorRate']*100,minRecord['k'], minRecord['lp']))
 
+    totalRate, totalClassCoverRate = crossValidation(2,3)
+    print( totalRate, totalClassCoverRate)
