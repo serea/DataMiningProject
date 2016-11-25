@@ -15,7 +15,7 @@ import random
 
 path = './continuousdata.csv'
 
-#读取csv数据，存放到dataset，单独把标签提出来
+
 def createDataSet(path):
     dataSet = []
     with open(path) as f:
@@ -26,7 +26,7 @@ def createDataSet(path):
             dataSet.append(row)
     return dataSet,labels
 
-#计算数据集中的香农熵，看数据的标签分布    
+    
 def calcShannonEnt(dataSet):
     numEntries = len(dataSet)
     labelCounts = {}
@@ -72,8 +72,7 @@ def majorityCnt(classList):
             classCount[vote]=0
         classCount[vote] += 1
     return max(classCount)
-
-#找到最大熵增益的特征及特征取值    
+    
 def chooseBestFeatureAndValueToSplit(dataSet,labels):
     numFeatures = len(dataSet[0]) - 1 #最后一项是标签
     baseEntropy = calcShannonEnt(dataSet)
@@ -99,7 +98,7 @@ def chooseBestFeatureAndValueToSplit(dataSet,labels):
     return (bestFeature,bestFeatureValue)
         
         
-#创建决策树，使用熵增益评判
+
 def createTree(dataSet,labels):
     classList = [example[-1] for example in dataSet]#从后往前赋值
     #取最后一列的所有值
@@ -108,7 +107,7 @@ def createTree(dataSet,labels):
         #类别相同停止划分
         return classList[0]
     if len(dataSet[0])==1:
-        #所有特征用完，数据只有标签列
+        #所有特征用完
         return majorityCnt(classList)
     (bestFeat,featValue) = chooseBestFeatureAndValueToSplit(dataSet,labels)
     #print(bestFeat,featValue,labels[bestFeat])
@@ -138,107 +137,68 @@ def Test(myTree,row,label):
     flag = ['H1','H2','H3','H4']
     if type(myTree)==dict:
         for (index,value) in myTree.items():
-            if index[-2:]=='系数':
-                for i in value.keys():
-                    if i[-5:]=='false':
-                        num = i
-                num = num[0:-5]
-                for j in range(len(label)):
-                    if label[j]==index:  
-                        point = j
-                if row[point]>num:
-                    result = Test(value[num+'false'],row,label)
-                    return result      
-                else:
-                    result = Test(value[num],row,label)
-                    return result
+            for i in value.keys():
+                if i[-5:]=='false':
+                    num = i
+            num = num[0:-5]
+            for j,k in enumerate(label):
+                if k==index:
+                    point = j
+            if row[j]>num:
+                result = Test(value[num+'false'],row,label)
+                return result      
             else:
-                result = Test(value,row,label)
-                return result
-                
+                result = Test(value[num],row,label)
+                return result 
     else:
         result = myTree
         return result
 
 #求正确率
-def FindAccuracy(datatest,trainnum,testnum,myTree,label,tolflag):
+def FindAccuracy(datatest,trainnum,testnum,myTree,label):
     rightnum=0
     wrongnum=0
-    rightflag={}
     for item in datatest:
         resultFromTree = Test(myTree,item,label)
+        print(resultFromTree)
+        print("rightresult:")
+        print(item[-1])
         if item[-1]==resultFromTree:
             rightnum += 1
-            if item[-1] not in rightflag.keys():
-                rightflag[item[-1]]=0
-            rightflag[item[-1]] += 1
         else:
             wrongnum += 1
-    print("rightnum:",rightnum)
-    print("wrongnum:",wrongnum)
-    for (key,item) in tolflag.items():
-        if key in rightflag:
-            rightflag[key] = rightflag[key]/float(tolflag[key])
-        else:
-            rightflag[key] = 0 
-
-    return rightnum/len(datatest),rightflag       
-
-#统计测试数据每种标签数
-def staflag(datatest,testnum):
-    flag = {}
-    for item in datatest:
-        if item[-1] not in flag.keys():
-            flag[item[-1]]=0
-        flag[item[-1]] += 1
-    for (k,f) in flag.items():
-        f = f/testnum
-    return flag
+    print(rightnum,wrongnum)
+    return rightnum/len(datatest)        
   
-#main()
+
 def main():
     data,label = createDataSet(path)
-    '''
-    print(label)
-    myTree = createTree(data,label)
-    print(label)
-    result = Test(myTree,data[0],label)
-    print(myTree)
-    print(result)
-    '''
     tolaccu=0
-    tolcover={'H1':0,'H2':0,'H3':0,'H4':0}
     lengthOfData=len(data)
-    random.shuffle(data)
     split=math.floor(len(data)/10)
-
+    random.shuffle(data)
     for time in range(10):
-        datatrain=[]
-        datatest=[]
-        for i in range(lengthOfData):
-            if i > split*(time) and i < split*(time+1)-1:
-                datatest.append(data[i])
-            else:
-                datatrain.append(data[i])
-        trainnum=len(datatrain)
-        testnum=len(datatest)
-        print("test for",time+1,":")
-        print("trainnum:",trainnum)
-        print("testnum:",testnum)
-        myTree = createTree(datatrain,label)
-        #print(myTree)
-        tolflag = staflag(datatest,testnum)
-        (accuracy,cover) = FindAccuracy(datatest,trainnum,testnum,myTree,label,tolflag)
-        print("accuracy:",accuracy)
-        print("cover:",cover)
-        tolaccu=tolaccu+accuracy
-        for (key,value) in tolcover.items():
-            tolcover[key]=tolcover[key]+cover[key]
+    	datatrain=[]
+    	datatest=[]
+    	for i in range(lengthOfData):
+    		if i > split*(time) and i < split*(time+1)-1:
+    			datatest.append(data[i])
+    		else:
+    			datatrain.append(data[i])
+    	trainnum=len(datatrain)
+    	testnum=len(datatest)
+    	print(trainnum)
+    	print(testnum)
+    	print(label)
+    	myTree = createTree(datatrain,label)
+    	#print(myTree)
+    	accuracy = FindAccuracy(datatest,trainnum,testnum,myTree,label)
+    	print("accuracy:",time)
+    	print(accuracy)
+    	tolaccu=tolaccu+accuracy
     tolaccu = tolaccu/10
-    for (key,value) in tolcover.items():
-        tolcover[key]=tolcover[key]/10
-    print("average accuracy:",tolaccu)
-    print("average cover:",tolcover)       
+    print(tolaccu)
+       
 
 if __name__=='__main__':
     main()
