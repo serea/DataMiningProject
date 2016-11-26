@@ -2,7 +2,6 @@ from flask import Flask, render_template, flash, redirect, jsonify,request
 from flask_bootstrap import Bootstrap
 import json
 from zanwen.knn import crossValidation
-from suliya.ID3ForContinuousValue import output
 
 app = Flask(__name__)
 bootstrap = Bootstrap(app)
