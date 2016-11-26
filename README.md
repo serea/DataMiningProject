@@ -18,7 +18,7 @@
 >- 2.利用数据挖掘的算法对数据进行分析，得到中医症素与乳腺癌TNM 分期之间的关系。根据实际的业务分析建议最小支持度设定为：6%，最小置信度为：75%；
 >- 3.对所构建的模型进行分析，得出你的结论。
 
-## Demo v0.2：
+## Demo v0.3：
 - 背景介绍
 
 ![demo](https://raw.githubusercontent.com/serea/DataMiningProject/master/demo.png)
@@ -26,3 +26,7 @@
 - K近邻算法
 
 ![demo_knn](https://raw.githubusercontent.com/serea/DataMiningProject/master/demo_knn.png)
+
+- 决策树
+
+![demo_knn](https://raw.githubusercontent.com/serea/DataMiningProject/master/demo_decision-tree.png)
