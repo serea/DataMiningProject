@@ -1,7 +1,8 @@
 from flask import Flask, render_template, flash, redirect, jsonify,request
 from flask_bootstrap import Bootstrap
 import json
-from zanwen.knn import crossValidation
+from zanwen.knn import getJsonResult as knnGetJson
+from suliya.ID3ForContinuousValue import getJsonResult as dTGetJson
 
 app = Flask(__name__)
 bootstrap = Bootstrap(app)
@@ -36,15 +37,7 @@ def knn():
 @app.route("/knn-result")
 def knn_result():
     # return "%.3f%%" %((1-crossValidation(knn_k, knn_lp))*100)
-
-    totalRate, totalClassCoverRate = crossValidation(knn_k, knn_lp)
-    return json.dumps({
-        "correctRate": "%.3f%%" %((1-totalRate)*100),
-        "coverRateH1": "%.3f%%" %(totalClassCoverRate[0]),
-        "coverRateH2": "%.3f%%" % (totalClassCoverRate[1]),
-        "coverRateH3": "%.3f%%" % (totalClassCoverRate[2]),
-        "coverRateH4": "%.3f%%" % (totalClassCoverRate[3])
-    })
+    return knnGetJson(knn_k, knn_lp)
 
 @app.route("/svm")
 def svm():
@@ -57,7 +50,7 @@ def bayes():
 @app.route("/decision-tree",methods=['GET','POST'])
 def decisionTree():
     if request.method=='POST':
-        return "%.3f%%" %(output()*100)
+        return dTGetJson()
     else:
         return render_template("decision-tree.html", title="决策树")
 

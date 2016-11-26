@@ -4,7 +4,7 @@ from numpy import *
 import operator
 import random
 import os
-
+import json
 Path = '/'.join(os.getcwd().split('/')[:-1])+'/zanwen'
 rawDataPath = Path + '/data/rawdata.csv'
 cleanDataPath = Path + '/data/cleandata.csv'
@@ -152,9 +152,15 @@ def findBestArgs( maxK, maxLp):
                 minRecord['minErrorRate'] = totalRate;
     return minRecord
 
-
-def hello():
-    return  "hello"
+def getJsonResult(k,lp):
+    totalRate, totalClassCoverRate = crossValidation(k, lp)
+    return json.dumps({
+        "correctRate": "%2.3f%%" % ((1 - totalRate) * 100),
+        "coverRateH1": "%2.3f%%" % (totalClassCoverRate[0]* 100),
+        "coverRateH2": "%2.3f%%" % (totalClassCoverRate[1]* 100),
+        "coverRateH3": "%2.3f%%" % (totalClassCoverRate[2]* 100),
+        "coverRateH4": "%2.3f%%" % (totalClassCoverRate[3]* 100)
+    })
 
 
 if __name__ == "__main__":
@@ -164,6 +170,7 @@ if __name__ == "__main__":
     # maxLp= 5
     # minRecord = findBestArgs(cleanDataPath, maxK, maxLp)
     # print("Minimal error rate: %f%%, when k: %d, lp: %d"%(minRecord['minErrorRate']*100,minRecord['k'], minRecord['lp']))
-
-    totalRate, totalClassCoverRate = crossValidation(2,3)
-    print( totalRate, totalClassCoverRate)
+    #
+    # totalRate, totalClassCoverRate = crossValidation(2,3)
+    # print( totalRate, totalClassCoverRate)
+    print(getJsonResult(2,2))

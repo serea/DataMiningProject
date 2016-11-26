@@ -12,7 +12,12 @@
                 url: "/decision-tree",
                 method:"post",
                 success: function (data) {
-                    $("#correct_rate").text(data);
+                    var jsonData = JSON.parse(data);
+                    $("#correctRate").text(jsonData.correctRate);
+                    $("#coverRateH1").text(jsonData.coverRateH1);
+                    $("#coverRateH2").text(jsonData.coverRateH2);
+                    $("#coverRateH3").text(jsonData.coverRateH3);
+                    $("#coverRateH4").text(jsonData.coverRateH4);
                     $("#decision_tree").button('reset')
                 }
             });
@@ -55,7 +60,22 @@
           <div class="page-header">
             <h1>结果展示</h1>
           </div>
-            <p >正确率: <span id="correct_rate"></span></p>
+            <table class="table table-striped">
+                  <tr>
+                      <td>正确率</td>
+                      <td>H1覆盖率</td>
+                      <td>H2覆盖率</td>
+                      <td>H3覆盖率</td>
+                      <td>H4覆盖率</td>
+                  </tr>
+                  <tr>
+                      <td id="correctRate">-</td>
+                      <td id="coverRateH1">-</td>
+                      <td id="coverRateH2">-</td>
+                      <td id="coverRateH3">-</td>
+                      <td id="coverRateH4">-</td>
+                  </tr>
+              </table>
               <button id="decision_tree" class="btn btn-primary" data-loading-text="正在加载">运行</button>
           </section>
       </div>

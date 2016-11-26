@@ -6,6 +6,7 @@ Created on Sun Nov 13 11:44:31 2016
 """
 
 import operator
+import json
 from math import log
 import math
 import time
@@ -13,7 +14,11 @@ import csv
 from sklearn import tree
 import random
 
-path = './continuousdata.csv'
+import os
+
+sysPath = '/'.join(os.getcwd().split('/')[:-1])+'/suliya'
+
+path = sysPath + '/continuousdata.csv'
 
 #读取csv数据，存放到dataset，单独把标签提出来
 def createDataSet(path):
@@ -237,9 +242,23 @@ def main():
     tolaccu = tolaccu/10
     for (key,value) in tolcover.items():
         tolcover[key]=tolcover[key]/10
+    return tolaccu,tolcover
     print("average accuracy:",tolaccu)
     print("average cover:",tolcover)       
 
+
+
+def getJsonResult():
+    totalRate, totalClassCoverRate = main()
+    return json.dumps({
+        "correctRate": "%2.3f%%" % (( totalRate) * 100),
+        "coverRateH1": "%2.3f%%" % (totalClassCoverRate['H1']* 100),
+        "coverRateH2": "%2.3f%%" % (totalClassCoverRate['H2']* 100),
+        "coverRateH3": "%2.3f%%" % (totalClassCoverRate['H3']* 100),
+        "coverRateH4": "%2.3f%%" % (totalClassCoverRate['H4']* 100)
+    })
+
+
 if __name__=='__main__':
-    main()
-    
+    # main()
+    print(getJsonResult())
