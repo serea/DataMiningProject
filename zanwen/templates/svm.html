@@ -1,6 +1,49 @@
 {% extends "layout.html" %}
 
 {% block script%}
+<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.0.js"></script>
+
+<script>
+    $(function(){
+        $("#train_model").click(function () {
+            $("#train_model").text("训练中");
+            $("#alert1").hide();
+            $("#alert2").hide();
+            g=$("#g").val();
+            c=$("#c").val();
+            $.ajax({
+                url: "/run_svm",
+                data: "c="+c+"&g="+g,
+                success: function (data) {
+                    if(data=='success'){
+                        $("#alert2").hide();
+                        $("#alert1").show();
+                        $("#train_model").text("训练svm模型");
+                    }else{
+                        $("#alert1").hide();
+                        $("#alert2").show();
+                        $("#train_model").text("训练svm模型");
+                    }
+                }
+            });
+            return false;
+        });
+        $("#svm_test").click(function(){
+            $.ajax({
+                url: 'test_svm',
+                dataType: "json",
+                success: function(data){
+                    $("#precise_rate").text(data.acc+"%");
+                    $("#coverRateH1").text(data.H1[0]+"/"+data.H1[1]);
+                    $("#coverRateH2").text(data.H2[0]+"/"+data.H2[1]);
+                    $("#coverRateH3").text(data.H3[0]+"/"+data.H3[1]);
+                    $("#coverRateH4").text(data.H4[0]+"/"+data.H4[1]);
+                }
+            });
+        })
+    })
+
+</script>
 
 {% endblock%}
 
@@ -8,63 +51,103 @@
 
 
 <header class="jumbotron subhead" id="overview">
-  <div class="container">
-    <h1>支持向量机</h1>
-    <p class="lead">支持向量机(Support Vector Machine，SVM)是Corinna Cortes和Vapnik等于1995年首先提出的，它在解决小样本、非线性及高维模式识别中表现出许多特有的优势，并能够推广应用到函数拟合等其他机器学习问题中。 </p>
-  </div>
+    <div class="container">
+        <h1>支持向量机</h1>
+        <p class="lead">支持向量机(Support Vector Machine，SVM)是Corinna
+            Cortes和Vapnik等于1995年首先提出的，它在解决小样本、非线性及高维模式识别中表现出许多特有的优势，并能够推广应用到函数拟合等其他机器学习问题中。 </p>
+    </div>
 </header>
 
 <div class="container">
     <div class="row">
-      <div class="span3 bs-docs-sidebar">
-        <ul class="nav nav-list bs-docs-sidenav affix-top">
-          <li class=""><a href="#section1"><i class="icon-chevron-right"></i> 参数设定</a></li>
-          <li class=""><a href="#section2"><i class="icon-chevron-right"></i> 结果展示</a></li>
-        </ul>
-      </div>
-      <div class="span9">
-
-        <!-- Section
-        ================================================== -->
-
-        <!-- Section
-        ================================================== -->
-        <section id="section1">
-          <div class="page-header">
-            <h1>参数设定</h1>
-          </div>
-           <!--<form action="" method="post">-->
-               <!--<ul>-->
-                   <!--<li>k: <input type="text" name="knn_k"></li>-->
-                   <!--<li>lp: <input type="text" name="knn_lp"></li>-->
-               <!--</ul>-->
-               <!--<p><input type="submit" class="btn btn-primary" value="提交"></p>-->
-           <!--</form>-->
-
-        <form  action="" method="post" class="from">
-             <div>
-                 <label  for="inputK">参数1: </label>
-                 <input type="text" name="knn_k" id = "inputK" placeholder="请输入参数1...">
-             </div>
-             <div>
-                 <label   for="inputLp">参数2: </label>
-                 <input type="text" name="knn_lp" id="inputLp" placeholder="请输入参数2....">
-             </div>
-             <button type="submit" class="btn btn-primary">提交</button>
-         </form>
+        <div class="span3 bs-docs-sidebar">
+            <ul class="nav nav-list bs-docs-sidenav affix-top">
+                <li class=""><a href="#section0"><i class="icon-chevron-right"></i> 数据集</a></li>
+                <li class=""><a href="#section1"><i class="icon-chevron-right"></i> 模型训练</a></li>
+                <li class=""><a href="#section2"><i class="icon-chevron-right"></i> 测试</a></li>
+            </ul>
+        </div>
+        <div class="span9">
 
 
-        </section>
+            <section id="section0">
+                <div class="page-header">
+                    <h1>数据集</h1>
+                </div>
 
-          <section id="section2">
-          <div class="page-header">
-            <h1>结果展示</h1>
-          </div>
-            <p id="precise_rate">正确率: </p>
-              <button id="knn_btn" class="btn btn-primary">运行</button>
-          </section>
 
-      </div>
+                <p>训练集大小：{{ nums[0] }} <span><button class="btn btn-small"
+                                                     onclick="window.location.href='svm/train.txt';">查看数据</button></span>
+                </p>
+                <p>测试集大小: {{ nums[1] }} <span><button class="btn btn-small"
+                                                      onclick="window.location.href='svm/test.txt';">查看数据</button></span>
+                </p>
+                <p><span><button class="btn btn-primary" id="makedata"
+                                 onclick="window.location.href='svm';">重新生成数据集</button></span></p>
+
+
+            </section>
+
+            <!-- Section
+            ================================================== -->
+
+            <!-- Section
+            ================================================== -->
+            <section id="section1">
+                <div class="page-header">
+                    <h1>参数设定</h1>
+                </div>
+                <!--<form action="" method="post">-->
+                <!--<ul>-->
+                <!--<li>k: <input type="text" name="knn_k"></li>-->
+                <!--<li>lp: <input type="text" name="knn_lp"></li>-->
+                <!--</ul>-->
+                <!--<p><input type="submit" class="btn btn-primary" value="提交"></p>-->
+                <!--</form>-->
+
+                <form action="" method="post" class="from">
+                    <div>
+                        <label for="g">rbf核函数参数g: </label>
+                        <input type="number" name="g" id="g" value="50">
+                    </div>
+                    <div>
+                        <label for="c">损失函数参数c: </label>
+                        <input type="number" name="c" id="c" value="100">
+                    </div>
+
+                    <button id="train_model" type="submit" class="btn btn-primary">训练svm模型</button>
+                </form>
+
+                <div id="alert1" class="alert alert-success" style="display:none;">success</div>
+                <div id="alert2" class="alert alert-error" style="display:none;">error</div>
+
+
+            </section>
+
+            <section id="section2">
+                <div class="page-header">
+                    <h1>结果展示</h1>
+                </div>
+                <button id="svm_test" class="btn btn-primary">运行</button>
+                <table class="table table-striped">
+                    <tr>
+                        <td>正确率</td>
+                        <td>H1覆盖率</td>
+                        <td>H2覆盖率</td>
+                        <td>H3覆盖率</td>
+                        <td>H4覆盖率</td>
+                    </tr>
+                    <tr>
+                        <td id="precise_rate">-</td>
+                        <td id="coverRateH1">-</td>
+                        <td id="coverRateH2">-</td>
+                        <td id="coverRateH3">-</td>
+                        <td id="coverRateH4">-</td>
+                    </tr>
+                </table>
+            </section>
+
+        </div>
     </div>
 </div>
 

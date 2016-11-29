@@ -16,7 +16,7 @@ else:
 				'libsvm.dll'))
 	else:
 		libsvm = CDLL(os.path.join(os.path.dirname(__file__),\
-				'../libsvm.so.2'))
+				'libsvm.so.2'))
 
 # Construct constants
 SVM_TYPE = ['C_SVC', 'NU_SVC', 'ONE_CLASS', 'EPSILON_SVR', 'NU_SVR' ]

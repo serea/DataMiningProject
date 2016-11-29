@@ -8,8 +8,11 @@ def writeFile(filename, lines):
     file.close()
 
 
-def make_dataset():
-    data = pd.read_excel('data/output.xls')
+def make_dataset(inputFile, trainFile, testFile):
+    testNum = 0
+    trainNum = 0
+
+    data = pd.read_excel(inputFile)
     indexes = [i for i in data.index]
 
     # 打乱顺序
@@ -26,11 +29,14 @@ def make_dataset():
         sample = [i for i in data.loc[index]]
         rows.append(sample[7] + ' ' + str(sample[0]) + ' ' + str(sample[1]) + ' ' + \
                     str(sample[2]) + ' ' + str(sample[3]) + ' ' + str(sample[4]) + '\n')
-    writeFile('test.txt', rows)
+    writeFile(testFile, rows)
+    testNum = len(rows)
 
     rows = []
     for index in trainSet:
         sample = [i for i in data.loc[index]]
         rows.append(sample[7] + ' ' + str(sample[0]) + ' ' + str(sample[1]) + ' ' + \
                     str(sample[2]) + ' ' + str(sample[3]) + ' ' + str(sample[4]) + '\n')
-    writeFile('train.txt', rows)
+    writeFile(trainFile, rows)
+    trainNum = len(rows)
+    return trainNum, testNum
