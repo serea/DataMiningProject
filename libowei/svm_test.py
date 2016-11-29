@@ -2,7 +2,6 @@
 from libowei.svmutil import *
 from libowei.svm import *
 from libowei.makedata import *
-import pandas as pd
 import json
 
 
