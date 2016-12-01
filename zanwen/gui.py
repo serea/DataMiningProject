@@ -3,10 +3,7 @@ from flask_bootstrap import Bootstrap
 import json
 from zanwen.knn import getJsonResult as knnGetJson
 from suliya.ID3ForContinuousValue import getJsonResult as dTGetJson
-<<<<<<< HEAD
-=======
 from libowei.svm_test import *
->>>>>>> 3c25848f283c50aef0a8b28b09cb39b5bd516cc7
 
 app = Flask(__name__)
 bootstrap = Bootstrap(app)
@@ -43,13 +40,6 @@ def knn_result():
     # return "%.3f%%" %((1-crossValidation(knn_k, knn_lp))*100)
     return knnGetJson(knn_k, knn_lp)
 
-<<<<<<< HEAD
-@app.route("/svm")
-def svm():
-    return render_template("svm.html",title="svm")
-
-=======
->>>>>>> 3c25848f283c50aef0a8b28b09cb39b5bd516cc7
 @app.route("/bayes")
 def bayes():
     return render_template("bayes.html",title="贝叶斯")
@@ -60,8 +50,6 @@ def decisionTree():
         return dTGetJson()
     else:
         return render_template("decision-tree.html", title="决策树")
-<<<<<<< HEAD
-=======
 
 @app.route("/svm")
 def svm():
@@ -97,7 +85,6 @@ def test_svm():
         return "error"
     json = getAccuracy(model, '../libowei/test.txt')
     return json
->>>>>>> 3c25848f283c50aef0a8b28b09cb39b5bd516cc7
 
 if __name__ == "__main__":
     app.run("0.0.0.0")
