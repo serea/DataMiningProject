@@ -4,6 +4,7 @@ import json
 from zanwen.knn import getJsonResult as knnGetJson
 from suliya.ID3ForContinuousValue import getJsonResult as dTGetJson
 from libowei.svm_test import *
+from liuxin.NB import getJsonResult as NBGetJson
 
 app = Flask(__name__)
 bootstrap = Bootstrap(app)
@@ -40,9 +41,12 @@ def knn_result():
     # return "%.3f%%" %((1-crossValidation(knn_k, knn_lp))*100)
     return knnGetJson(knn_k, knn_lp)
 
-@app.route("/bayes")
+@app.route("/bayes",methods=['GET','POST'])
 def bayes():
-    return render_template("bayes.html",title="贝叶斯")
+    if request.method=='POST':
+        return NBGetJson()
+    else:
+        return render_template("bayes.html",title="贝叶斯")
 
 @app.route("/decision-tree",methods=['GET','POST'])
 def decisionTree():

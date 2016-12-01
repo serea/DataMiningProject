@@ -1,16 +1,13 @@
 import numpy
 import math
 import random
+import json
 from numpy import genfromtxt, zeros
 
-<<<<<<< HEAD
-#def calculate(x,mean,stddev):
-#    exponent = math.exp(-math.pow(x-mean,2)/(2*math.pow(stdev,2)))
-#    return (1/(math.sqrt(2*math.pi)*stddev))*exponent
+import os
 
+sysPath = '/'.join(os.getcwd().split('/')[:-1])+'/liuxin'
 
-=======
->>>>>>> 3c25848f283c50aef0a8b28b09cb39b5bd516cc7
 # 均值，#有字符串的情况暂时不会处理~,先这么着吧...
 def mean(numbers):
     if (numbers[0] == 'H1')or(numbers[0] == 'H2')or(numbers[0] == 'H3')or(numbers[0] == 'H4'):
@@ -98,39 +95,7 @@ def getAccuracy(testSet, predictions):
 	return (correct/float(len(testSet))) * 100.0
 
 
-<<<<<<< HEAD
-# read
-freadn = 'hw2.csv'
-fread = open("hw2.csv", 'r')
-# 读取数据集
-dataMat = genfromtxt(freadn, delimiter=',', usecols=(0, 1, 2, 3, 4, 5))
-dataMat = dataMat.tolist()
-# 病程阶段
-target = genfromtxt(freadn, delimiter=',', usecols=(6), dtype=str)
-target = target.tolist()
-#因numpy的arraynd不能容纳不同类型的数据故转换成list进行拼接
-fread.close()
 
-#list拼接
-count = 0
-while count < len(dataMat):
-    dataMat[count].append(target[count])
-    count = count+1
-
-splitRatio = 0.1 #训练集和测试集的比例
-trainingSet, testSet = splitDataset(dataMat, splitRatio)
-
-
-# prepare model
-summaries = summarizeByClass(trainingSet)
-# test model
-predictions = getPredictions(summaries, testSet)
-accuracy = getAccuracy(testSet, predictions)
-
-
-
-print(accuracy)
-=======
 def getCoverate(testSet, trainSet,predictions):
     countH1 = 0
     LabelH1 = 0
@@ -164,8 +129,8 @@ def getCoverate(testSet, trainSet,predictions):
 
 
 def main():
-    freadn = 'hw2.csv'
-    fread = open("hw2.csv", 'r')
+    freadn = sysPath+'/hw2.csv'
+    fread = open(freadn, 'r')
     # 读取数据集
     dataMat = genfromtxt(freadn, delimiter=',', usecols=(0, 1, 2, 3, 4, 5))
     dataMat = dataMat.tolist()
@@ -190,11 +155,23 @@ def main():
     accuracy = getAccuracy(testSet, predictions)
     coverH1,coverH2,coverH3,coverH4 = getCoverate(testSet,trainingSet,predictions)
 
-    print(accuracy)
-    print(coverH1)
-    print(coverH2)
-    print(coverH3)
-    print(coverH4)
+    # print(accuracy)
+    # print(coverH1)
+    # print(coverH2)
+    # print(coverH3)
+    # print(coverH4)
+
+    return accuracy,coverH1,coverH2,coverH3,coverH4
+
+def getJsonResult():
+    accuracy, coverH1, coverH2, coverH3, coverH4 = main()
+    return json.dumps({
+        "correctRate": "%2.3f%%" % ( accuracy),
+        "coverRateH1": "%2.3f%%" % (coverH1),
+        "coverRateH2": "%2.3f%%" % (coverH2),
+        "coverRateH3": "%2.3f%%" % (coverH3),
+        "coverRateH4": "%2.3f%%" % (coverH4),
+    })
 
 main()
->>>>>>> 3c25848f283c50aef0a8b28b09cb39b5bd516cc7
+
