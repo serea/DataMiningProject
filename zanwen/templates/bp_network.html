@@ -1,0 +1,85 @@
+{% extends "layout.html" %}
+
+{% block script%}
+<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.0.js"></script>
+
+<script>
+    $(function(){
+
+        $("#bp-network").click(function () {
+            $("#bp-network").button('loading'),
+            $.ajax({
+                url: "/bp_network",
+                method:"post",
+                success: function (data) {
+                    var jsonData = JSON.parse(data);
+                    $("#correctRate").text(jsonData.correctRate);
+                    $("#coverRateH1").text(jsonData.coverRateH1);
+                    $("#coverRateH2").text(jsonData.coverRateH2);
+                    $("#coverRateH3").text(jsonData.coverRateH3);
+                    $("#coverRateH4").text(jsonData.coverRateH4);
+                    $("#bp_network").button('reset')
+                }
+            });
+        });
+
+    })
+</script>
+
+{% endblock%}
+
+{% block body %}
+
+
+<header class="jumbotron subhead" id="overview">
+  <div class="container">
+    <h1>BP神经网络</h1>
+    <p class="lead">BP（Back Propagation）神经网络是1986年由Rumelhart和McCelland为首的科学家小组提出，是一种按误差逆传播算法训练的多层前馈网络，是目前应用最广泛的神经网络模型之一。BP网络能学习和存贮大量的输入-输出模式映射关系，而无需事前揭示描述这种映射关系的数学方程。它的学习规则是使用梯度下降法，通过反向传播来不断调整网络的权值和阈值，使网络的误差平方和最小。BP神经网络模型拓扑结构包括输入层（input）、隐层(hidden layer)和输出层(output layer)。</p>
+  </div>
+</header>
+
+<div class="container">
+    <div class="row">
+      <div class="span3 bs-docs-sidebar">
+        <ul class="nav nav-list bs-docs-sidenav affix-top">
+          <li class=""><a href="#section1"><i class="icon-chevron-right"></i> 结果展示</a></li>
+        </ul>
+      </div>
+      <div class="span9">
+
+        <!-- Section
+        ================================================== -->
+
+        <!-- Section
+        ================================================== -->
+        <section id="section1">
+
+        </section>
+
+          <section id="section1">
+          <div class="page-header">
+            <h1>结果展示</h1>
+          </div>
+            <table class="table table-striped">
+                  <tr>
+                      <td>正确率</td>
+                      <td>H1覆盖率</td>
+                      <td>H2覆盖率</td>
+                      <td>H3覆盖率</td>
+                      <td>H4覆盖率</td>
+                  </tr>
+                  <tr>
+                      <td id="correctRate">-</td>
+                      <td id="coverRateH1">-</td>
+                      <td id="coverRateH2">-</td>
+                      <td id="coverRateH3">-</td>
+                      <td id="coverRateH4">-</td>
+                  </tr>
+              </table>
+              <button id="bp-network" class="btn btn-primary" data-loading-text="正在加载">运行</button>
+          </section>
+      </div>
+    </div>
+</div>
+
+{%endblock%}

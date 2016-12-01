@@ -5,6 +5,7 @@ Created on Sun Nov 13 11:44:31 2016
 @author: Serea
 """
 
+
 import operator
 from math import log
 import math

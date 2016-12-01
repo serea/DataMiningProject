@@ -5,7 +5,8 @@ from zanwen.knn import getJsonResult as knnGetJson
 from suliya.ID3ForContinuousValue import getJsonResult as dTGetJson
 from libowei.svm_test import *
 from liuxin.NB import getJsonResult as NBGetJson
-
+from jianghaofeng.bp_network import  getJsonResult as BPNGetJson
+from jianghaofeng.frequent_pattern import getJsonResult as FPGetJson
 app = Flask(__name__)
 bootstrap = Bootstrap(app)
 
@@ -48,12 +49,26 @@ def bayes():
     else:
         return render_template("bayes.html",title="贝叶斯")
 
-@app.route("/decision-tree",methods=['GET','POST'])
+@app.route("/frequent-pattern",methods=['GET','POST'])
+def frequentPattern():
+    if request.method=='POST':
+        return FPGetJson()
+    else:
+        return render_template("frequent_pattern.html",title="频繁集")
+
+@app.route("/bp_network",methods=['GET','POST'])
+def bpNetwork():
+    if request.method=='POST':
+        return BPNGetJson()
+    else:
+        return render_template("bp_network.html", title="BP神经网络")
+
+@app.route("/decision_tree",methods=['GET','POST'])
 def decisionTree():
     if request.method=='POST':
         return dTGetJson()
     else:
-        return render_template("decision-tree.html", title="决策树")
+        return render_template("decision_tree.html", title="决策树")
 
 @app.route("/svm")
 def svm():

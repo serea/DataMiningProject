@@ -9,7 +9,7 @@
         $("#decision_tree").click(function () {
             $("#decision_tree").button('loading'),
             $.ajax({
-                url: "/decision-tree",
+                url: "/decision_tree",
                 method:"post",
                 success: function (data) {
                     var jsonData = JSON.parse(data);
