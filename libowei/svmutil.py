@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from svm import *
+from libowei.svm import *
 
 
 def svm_read_problem(data_file_name):
@@ -32,7 +32,8 @@ def svm_load_model(model_file_name):
 
     Load a LIBSVM model from model_file_name and return.
     """
-    model = libsvm.svm_load_model(model_file_name)
+
+    model = libsvm.svm_load_model(model_file_name.encode())
     if not model:
         print("can't open model file %s" % model_file_name)
         return None
@@ -46,7 +47,7 @@ def svm_save_model(model_file_name, model):
 
     Save a LIBSVM model to the file model_file_name.
     """
-    libsvm.svm_save_model(model_file_name, model)
+    libsvm.svm_save_model(model_file_name.encode(), model)
 
 
 def evaluations(ty, pv):

@@ -1,8 +1,12 @@
-from flask import Flask, render_template, flash, redirect, jsonify,request
+from flask import Flask, render_template, flash, redirect, jsonify,request,make_response
 from flask_bootstrap import Bootstrap
 import json
 from zanwen.knn import getJsonResult as knnGetJson
 from suliya.ID3ForContinuousValue import getJsonResult as dTGetJson
+<<<<<<< HEAD
+=======
+from libowei.svm_test import *
+>>>>>>> 3c25848f283c50aef0a8b28b09cb39b5bd516cc7
 
 app = Flask(__name__)
 bootstrap = Bootstrap(app)
@@ -39,10 +43,13 @@ def knn_result():
     # return "%.3f%%" %((1-crossValidation(knn_k, knn_lp))*100)
     return knnGetJson(knn_k, knn_lp)
 
+<<<<<<< HEAD
 @app.route("/svm")
 def svm():
     return render_template("svm.html",title="svm")
 
+=======
+>>>>>>> 3c25848f283c50aef0a8b28b09cb39b5bd516cc7
 @app.route("/bayes")
 def bayes():
     return render_template("bayes.html",title="贝叶斯")
@@ -53,6 +60,44 @@ def decisionTree():
         return dTGetJson()
     else:
         return render_template("decision-tree.html", title="决策树")
+<<<<<<< HEAD
+=======
+
+@app.route("/svm")
+def svm():
+    dataNum = makedata('../libowei/output.xls', '../libowei/train.txt', '../libowei/test.txt')
+    return render_template("svm.html", title="svm", nums=dataNum)
+
+
+@app.route('/svm/<path>.txt')
+def print_text(path):
+    fileName = "../libowei/%s.txt" % path
+    resp = make_response(open(fileName).read())
+    resp.headers["Content-type"] = "application/text;charset=UTF-8"
+    return resp
+
+
+@app.route("/run_svm")
+def run_svm():
+    g = int(request.args.get('g'))
+    c = int(request.args.get('c'))
+    model = runsvm(c, g, '../libowei/train.txt')
+    saveModel("../libowei/model.txt", model)
+    if model == None:
+        return "error"
+    else:
+        return "success"
+
+
+@app.route("/test_svm")
+def test_svm():
+    model = loadModel('../libowei/model.txt')
+
+    if model == None:
+        return "error"
+    json = getAccuracy(model, '../libowei/test.txt')
+    return json
+>>>>>>> 3c25848f283c50aef0a8b28b09cb39b5bd516cc7
 
 if __name__ == "__main__":
-    app.run()
+    app.run("0.0.0.0")
