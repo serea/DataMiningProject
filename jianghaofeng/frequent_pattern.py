@@ -4,6 +4,8 @@ import os
 import json
 sysPath = '/'.join(os.getcwd().split('/')[:-1])+'/jianghaofeng'
 
+
+
 class Frequent_Pattern:
     def __init__(self):
         self.file_name = sysPath+"/data.txt"
@@ -168,12 +170,12 @@ class Frequent_Pattern:
                 if flag:
                     self.frequent_data_map[i] += 1
         self.frequent_data_map[0] = 900
-
+        """
         for i in range(1, pow(2, 10)).__reversed__():
             for j in range(0, i).__reversed__():
                 if i & j == j:
                     self.frequent_data_map[j] -= self.frequent_data_map[i]
-
+        """
         with open("test.txt", "w") as wfp:
             for key in self.frequent_data_map.keys():
                 if self.frequent_data_map[key] > self.reliability:
@@ -312,23 +314,66 @@ class Frequent_Pattern:
                 elif predict_label_lst[label_index] == 4:
                     four_accurancy += 1
 
+        print("正确率 = " + str(accuracy/len(self.predict_label_data_lst)))
+        print("H1覆盖率 = " + str(one_accurancy/self.predict_label_data_lst.count(1)))
+        print("H2覆盖率 = " + str(two_accurancy/self.predict_label_data_lst.count(2)))
+        print("H3覆盖率 = " + str(three_accurancy/self.predict_label_data_lst.count(3)))
+        print("H4覆盖率 = " + str(four_accurancy/self.predict_label_data_lst.count(4)))
 
-        # accuracy = str(accuracy/len(self.predict_label_data_lst))
-        # coverH1= str(one_accurancy/self.predict_label_data_lst.count(1))
-        # coverH1= str(one_accurancy/self.predict_label_data_lst.count(1))
-        # print("正确率 = " + str(accuracy/len(self.predict_label_data_lst)))
+        frequent_result = self.output_frequent(frequent_set_lst)
         accuracy ="%2.3f%%" %(accuracy / len(self.predict_label_data_lst)*100)
         coverH1 = "%2.3f%%" % (one_accurancy / self.predict_label_data_lst.count(1)*100)
         coverH2 = "%2.3f%%" % (two_accurancy/self.predict_label_data_lst.count(2)*100)
         coverH3 = "%2.3f%%" % (three_accurancy/self.predict_label_data_lst.count(3)*100)
         coverH4 = "%2.3f%%" % (four_accurancy/self.predict_label_data_lst.count(4)*100)
-        print("正确率 = " + accuracy)
-        print("H1覆盖率 = " + coverH1)
-        print("H2覆盖率 = " + coverH2)
-        print("H3覆盖率 = " + coverH3)
-        print("H4覆盖率 = " + coverH4)
 
-        return accuracy, coverH1, coverH2, coverH3, coverH4
+        return accuracy, coverH1, coverH2, coverH3, coverH4,frequent_result
+
+    def output_frequent(self, frequent_set_lst):
+        result = [0,0,0,0,0,0]
+        for frequent_pattern in frequent_set_lst:
+            pattern_str = ""
+            num_lst = self.num_to_lst(frequent_pattern)
+            if num_lst[0] == 1:
+                result[0]='>=' + str(self.line_one_measure)
+                pattern_str += "肝气郁结证型系数 >= " + str(self.line_one_measure) + "\n"
+            else:
+                result[0] = '<' + str(self.line_one_measure)
+                pattern_str += "肝气郁结证型系数 < " + str(self.line_one_measure) + "\n"
+            if num_lst[1] == 1:
+                result[1] = '>=' + str(self.line_one_measure)
+                pattern_str += "热毒蕴结证型系数 >= " + str(self.line_two_measure) + "\n"
+            else:
+                result[1] = '<' + str(self.line_one_measure)
+                pattern_str += "热毒蕴结证型系数 < " + str(self.line_two_measure) + "\n"
+            if num_lst[2] == 1:
+                result[2] = '>=' + str(self.line_one_measure)
+                pattern_str += "冲任失调证型系数 >= " + str(self.line_three_measure) + "\n"
+            else:
+                result[2] = '<' + str(self.line_one_measure)
+                pattern_str += "冲任失调证型系数 < " + str(self.line_three_measure) + "\n"
+            if num_lst[3] == 1:
+                result[3] = '>=' + str(self.line_one_measure)
+                pattern_str += "气血两虚证型系数 >= " + str(self.line_four_measure) + "\n"
+            else:
+                result[3] = '<' + str(self.line_one_measure)
+                pattern_str = "气血两虚证型系数 < " + str(self.line_four_measure) + "\n"
+            if num_lst[4] == 1:
+                result[4] = '>=' + str(self.line_one_measure)
+                pattern_str += "脾胃虚弱证型系数 >= " + str(self.line_five_measure) + "\n"
+            else:
+                result[4] = '<' + str(self.line_one_measure)
+                pattern_str += "脾胃虚弱证型系数 < " + str(self.line_five_measure) + "\n"
+            if num_lst[5] == 1:
+                result[5] = '>=' + str(self.line_one_measure)
+                pattern_str += "肝肾阴虚证型系数 >= " + str(self.line_six_measure) + "\n"
+            else:
+                result[4] = '<' + str(self.line_one_measure)
+                pattern_str += "肝肾阴虚证型系数 < " + str(self.line_six_measure) + "\n"
+            print(frequent_pattern)
+            print(pattern_str)
+            return result
+
 
 
 
@@ -339,13 +384,19 @@ def getJsonResult():
     fp.get_data()
     fp.pre_init_data()
     frequent_set_lst = fp.handle_frequent()
-    accuracy, coverH1, coverH2, coverH3, coverH4 = fp.predict(frequent_set_lst)
+    accuracy, coverH1, coverH2, coverH3, coverH4 ,frequent_result= fp.predict(frequent_set_lst)
     return json.dumps({
         "correctRate": accuracy,
         "coverRateH1": coverH1,
         "coverRateH2": coverH2,
         "coverRateH3": coverH3,
         "coverRateH4": coverH4,
+        "arg1":frequent_result[0],
+        "arg2":frequent_result[1],
+        "arg3":frequent_result[2],
+        "arg4":frequent_result[3],
+        "arg5":frequent_result[4],
+        "arg6":frequent_result[5]
     })
 
 # if __name__ == "__main__":
@@ -356,3 +407,4 @@ def getJsonResult():
 #     fp.pre_init_data()
 #     frequent_set_lst = fp.handle_frequent()
 #     fp.predict(frequent_set_lst)
+# getJsonResult()
