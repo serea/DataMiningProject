@@ -7,6 +7,7 @@ from numpy import genfromtxt, zeros
 import os
 
 sysPath = '/'.join(os.getcwd().split('/')[:-1])+'/liuxin'
+print(os.getcwd())
 
 # 均值，#有字符串的情况暂时不会处理~,先这么着吧...
 def mean(numbers):

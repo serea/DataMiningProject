@@ -3,7 +3,7 @@ from flask_bootstrap import Bootstrap
 import json
 from zanwen.knn import getJsonResult as knnGetJson
 from suliya.ID3ForContinuousValue import getJsonResult as dTGetJson
-from libowei.svm_test import *
+# from libowei.svm_test import *
 from liuxin.NB import getJsonResult as NBGetJson
 from jianghaofeng.bp_network import  getJsonResult as BPNGetJson
 from jianghaofeng.frequent_pattern import getJsonResult as FPGetJson
