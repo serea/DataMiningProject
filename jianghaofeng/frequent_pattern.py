@@ -1,4 +1,14 @@
 import math
+<<<<<<< HEAD
+=======
+import  random
+import os
+import json
+sysPath = '/'.join(os.getcwd().split('/')[:-1])+'/jianghaofeng'
+
+
+
+>>>>>>> origin/master
 class Frequent_Pattern:
 
     def __init__(self):
@@ -145,6 +155,7 @@ class Frequent_Pattern:
                 if flag:
                     self.frequent_data_map[i] += 1
         self.frequent_data_map[0] = 900
+<<<<<<< HEAD
 
         for i in range(1,pow(2,10)).__reversed__():
             for j in range(0,i).__reversed__():
@@ -152,6 +163,15 @@ class Frequent_Pattern:
                     self.frequent_data_map[j] -= self.frequent_data_map[i]
 
         with open("test.txt","w") as wfp:
+=======
+        """
+        for i in range(1, pow(2, 10)).__reversed__():
+            for j in range(0, i).__reversed__():
+                if i & j == j:
+                    self.frequent_data_map[j] -= self.frequent_data_map[i]
+        """
+        with open("test.txt", "w") as wfp:
+>>>>>>> origin/master
             for key in self.frequent_data_map.keys():
                 if self.frequent_data_map[key] > self.reliability:
                     wfp.write("key = " + str(key) + "  value = " + str(self.frequent_data_map[key]) + "\n")
@@ -238,12 +258,127 @@ class Frequent_Pattern:
             elif frequent_data >= 512 and frequent_data < 1024:
                 four += self.frequent_data_map[frequent_data]
 
+<<<<<<< HEAD
         wfp.write("one = " + str(one) + "\n")
         wfp.write("two = " + str(two) + "\n")
         wfp.write("three = " + str(three) + "\n")
         wfp.write("four = " + str(four) + "\n")
         wfp.write("all = " + str(one + two + three + four) + "\n")
         wfp.close()
+=======
+        print("one = " + str(one))
+        print("two = " + str(two))
+        print("three = " + str(three))
+        print("four = " + str(four))
+        print("all = " + str(one + two + three + four))
+
+        return frequent_set_lst
+
+    def get_similarity(self, a_lst, b_lst):
+        temp = 0
+        for index in range(len(a_lst)):
+            if a_lst[index] == b_lst[index]:
+                temp += 1
+        return temp
+
+    def num_to_lst(self, number):
+        lst = []
+        while number > 0:
+            lst.append(number % 2)
+            number = int(number / 2)
+        return lst[:6]
+
+    def predict(self, frequent_set_lst):
+        accuracy = 0
+        one_accurancy = 0
+        two_accurancy = 0
+        three_accurancy = 0
+        four_accurancy = 0
+        predict_label_lst = []
+        for predict_data in self.predict_data_lst:
+            similarity = -1
+            label = 0
+            for frequent_data in frequent_set_lst:
+                b_lst = self.num_to_lst(frequent_data)
+                if self.get_similarity(predict_data, b_lst) > similarity:
+                    similarity = self.get_similarity(predict_data, b_lst)
+                    label = int(math.log(frequent_data,2)) - 5
+            predict_label_lst.append(label)
+        for label_index in range(len(self.predict_label_data_lst)):
+            if predict_label_lst[label_index] == self.predict_label_data_lst[label_index]:
+                accuracy += 1
+                if predict_label_lst[label_index] == 1:
+                    one_accurancy += 1
+                elif predict_label_lst[label_index] == 2:
+                    two_accurancy += 1
+                elif predict_label_lst[label_index] == 3:
+                    three_accurancy += 1
+                elif predict_label_lst[label_index] == 4:
+                    four_accurancy += 1
+
+        print("正确率 = " + str(accuracy/len(self.predict_label_data_lst)))
+        print("H1覆盖率 = " + str(one_accurancy/self.predict_label_data_lst.count(1)))
+        print("H2覆盖率 = " + str(two_accurancy/self.predict_label_data_lst.count(2)))
+        print("H3覆盖率 = " + str(three_accurancy/self.predict_label_data_lst.count(3)))
+        print("H4覆盖率 = " + str(four_accurancy/self.predict_label_data_lst.count(4)))
+
+        frequent_result = self.output_frequent(frequent_set_lst)
+        accuracy ="%2.3f%%" %(accuracy / len(self.predict_label_data_lst)*100)
+        coverH1 = "%2.3f%%" % (one_accurancy / self.predict_label_data_lst.count(1)*100)
+        coverH2 = "%2.3f%%" % (two_accurancy/self.predict_label_data_lst.count(2)*100)
+        coverH3 = "%2.3f%%" % (three_accurancy/self.predict_label_data_lst.count(3)*100)
+        coverH4 = "%2.3f%%" % (four_accurancy/self.predict_label_data_lst.count(4)*100)
+
+        return accuracy, coverH1, coverH2, coverH3, coverH4,frequent_result
+
+    def output_frequent(self, frequent_set_lst):
+        result = [0,0,0,0,0,0]
+        for frequent_pattern in frequent_set_lst:
+            pattern_str = ""
+            num_lst = self.num_to_lst(frequent_pattern)
+            if num_lst[0] == 1:
+                result[0]='>=' + str(self.line_one_measure)
+                pattern_str += "肝气郁结证型系数 >= " + str(self.line_one_measure) + "\n"
+            else:
+                result[0] = '<' + str(self.line_one_measure)
+                pattern_str += "肝气郁结证型系数 < " + str(self.line_one_measure) + "\n"
+            if num_lst[1] == 1:
+                result[1] = '>=' + str(self.line_one_measure)
+                pattern_str += "热毒蕴结证型系数 >= " + str(self.line_two_measure) + "\n"
+            else:
+                result[1] = '<' + str(self.line_one_measure)
+                pattern_str += "热毒蕴结证型系数 < " + str(self.line_two_measure) + "\n"
+            if num_lst[2] == 1:
+                result[2] = '>=' + str(self.line_one_measure)
+                pattern_str += "冲任失调证型系数 >= " + str(self.line_three_measure) + "\n"
+            else:
+                result[2] = '<' + str(self.line_one_measure)
+                pattern_str += "冲任失调证型系数 < " + str(self.line_three_measure) + "\n"
+            if num_lst[3] == 1:
+                result[3] = '>=' + str(self.line_one_measure)
+                pattern_str += "气血两虚证型系数 >= " + str(self.line_four_measure) + "\n"
+            else:
+                result[3] = '<' + str(self.line_one_measure)
+                pattern_str = "气血两虚证型系数 < " + str(self.line_four_measure) + "\n"
+            if num_lst[4] == 1:
+                result[4] = '>=' + str(self.line_one_measure)
+                pattern_str += "脾胃虚弱证型系数 >= " + str(self.line_five_measure) + "\n"
+            else:
+                result[4] = '<' + str(self.line_one_measure)
+                pattern_str += "脾胃虚弱证型系数 < " + str(self.line_five_measure) + "\n"
+            if num_lst[5] == 1:
+                result[5] = '>=' + str(self.line_one_measure)
+                pattern_str += "肝肾阴虚证型系数 >= " + str(self.line_six_measure) + "\n"
+            else:
+                result[4] = '<' + str(self.line_one_measure)
+                pattern_str += "肝肾阴虚证型系数 < " + str(self.line_six_measure) + "\n"
+            print(frequent_pattern)
+            print(pattern_str)
+            return result
+
+
+
+>>>>>>> origin/master
 
 if __name__ == "__main__":
     fp = Frequent_Pattern()
@@ -251,6 +386,7 @@ if __name__ == "__main__":
     fp.output_data()
     fp.get_data()
     fp.pre_init_data()
+<<<<<<< HEAD
     fp.handle_frequent()
     """
     for one in range(1,6):
@@ -266,3 +402,30 @@ if __name__ == "__main__":
                             fp.pre_init_data()
                             fp.handle_frequent()
     """
+=======
+    frequent_set_lst = fp.handle_frequent()
+    accuracy, coverH1, coverH2, coverH3, coverH4 ,frequent_result= fp.predict(frequent_set_lst)
+    return json.dumps({
+        "correctRate": accuracy,
+        "coverRateH1": coverH1,
+        "coverRateH2": coverH2,
+        "coverRateH3": coverH3,
+        "coverRateH4": coverH4,
+        "arg1":frequent_result[0],
+        "arg2":frequent_result[1],
+        "arg3":frequent_result[2],
+        "arg4":frequent_result[3],
+        "arg5":frequent_result[4],
+        "arg6":frequent_result[5]
+    })
+
+# if __name__ == "__main__":
+#     fp = Frequent_Pattern()
+#     fp.handle_data(4 / 6, 3 / 6, 2 / 6, 1 / 6, 4 / 6, 5 / 6)
+#     fp.output_data()
+#     fp.get_data()
+#     fp.pre_init_data()
+#     frequent_set_lst = fp.handle_frequent()
+#     fp.predict(frequent_set_lst)
+# getJsonResult()
+>>>>>>> origin/master
